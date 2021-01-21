@@ -88,3 +88,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+// Exportarmos el modulo para usarlo en el spec del API o test del API
+module.exports = server;
