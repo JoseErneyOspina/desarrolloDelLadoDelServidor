@@ -40,11 +40,13 @@ app.use('/', indexRouter);
 app.use('/usuarios', usuariosRouter);
 // Agregamos el app.use de token
 app.use('/token', tokenRouter);
+app.use('/bicicletas', loggedIn, bicicletasRouter);
+
 app.use('/users', usersRouter);
 
-app.use('/bicicletas', bicicletasRouter);
-app.use('/api/bicicletas', bicicletasAPIRouter);
-app.use('/api/usuarios', usuarioAPIRouter);
+app.use('/api/auth', authApiRouter);
+app.use('/api/bicicletas', validarUsuario, bicicletasApiRouter);
+app.use('/api/usuarios', usuariosAPIRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -61,5 +63,28 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//funcion para saber si es logged
+function loggedIn(req, res, next) {
+  if (req.user){
+    next();
+  }else{
+    console.log('Usuario sin loguarse');
+    res.redirect('/login');
+  }
+};
+
+function validarUsuario (req, res, next) {
+  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded){
+    if(err) {
+      res.json({ status: "error", message: err.message, data: null })
+    } else {
+      req.body._userId = decoded.id;
+      console.log('jwt verify: ' + decoded);
+
+      next();
+    }
+  })
+}
 
 module.exports = app;
