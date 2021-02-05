@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+
 const mailConfig = {
     host: 'smtp.ethereal.email',
     port: 587,

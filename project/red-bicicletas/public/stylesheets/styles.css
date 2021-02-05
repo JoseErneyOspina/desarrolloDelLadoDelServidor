@@ -68,6 +68,9 @@ body {
   color: #212529;
   text-align: left;
   background-color: #fff;
+
+  padding: 50px;
+  padding-top: 5rem;
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {

@@ -54,6 +54,47 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+
+app.get('/login', function(req, res){
+  res.render('session/login');
+});
+
+app.post('/login', function(req,res,next){
+  passport.authenticate('local', function(err, usuario, info){
+    if (err) return next(err);
+    if (!usuario) return res.render('session/login', {info});
+    req.login(usuario,function(err){
+      if (err) return next(err);
+      return res.redirect('/');
+    });
+  })(req, res, next);
+});
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+app.get('/forgotPassword', function(req,res){
+  res.render('session/forgotPassword');
+});
+
+app.post('/forgotPassword', function(req, res, next){
+  Usuario.findOne({ email: req.body.email }, function(err, usuario) {
+    if(!usuario) return res.render('session/forgotPassword', { info: { message: 'No existe el email para un usuario existente.' }});
+    usuario.resetPassword(function(err){
+      if(err) return next(err);
+      console.log('session/forgotPasswordMessage');
+    })
+    res.render('session/forgotPasswordMessage');
+  })
+});
+
+
+
+
 app.use('/', indexRouter);
 // Agremaos el app.use de usuarios
 app.use('/usuarios', usuariosRouter);
