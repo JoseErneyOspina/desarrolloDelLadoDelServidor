@@ -92,6 +92,35 @@ app.post('/forgotPassword', function(req, res, next){
   })
 });
 
+app.get('/resetPassword/:token', function(req,res,next){
+  Token.findOne({ token: req.params.token }, function (err, token){
+    if (!token) return res.status(400).send({ msg: 'No existe un usuario asociado al token. Verifique que su token no haya expirado.' });
+    
+    Usuario.findById(token._userId, function (err, usuario){
+      if (!usuario) return res.status(400).send({ msg: 'No existe un usuario asociado al token. '});
+      res.render('session/resetPassword', { errors: {}, usuario: usuario});
+    });
+  });
+});
+
+app.post('/resetPassword', function(req, res){
+  if (req.body.password != req.body.confirm_password) {
+    res.render('session/resetPassword', {errors: {confirm_password: {message: 'No coincide con el password ingresado'}},
+    usuario: new Usuario({email: req.body.email})});
+    return;
+  }
+  Usuario.findOne({ email: req.body.email }, function (err, usuario) {
+    usuario.password = req.body.password;
+    usuario.save(function(err){
+      if (err) {
+        res.render('session/resetPassword', { errors: err.errors, usuario: new Usuario({email: req.body.email})});
+      }else{
+        res.redirect('/login');
+      }
+    });
+  });
+});
+
 
 
 
