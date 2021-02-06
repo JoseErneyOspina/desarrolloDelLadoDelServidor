@@ -1,4 +1,4 @@
-<a href="https://behance.net/JoseErneyOspina"><img src="/recursos/joseErneyOspina.png" height="200" align="right"></a>
+<a href="https://behance.net/JoseErneyOspina"><img src="/joseErneyOspina.png" height="200" align="right"></a>
 # Jose Erney Ospina
 
 ### PROYECTO
