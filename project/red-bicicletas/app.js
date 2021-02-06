@@ -7,6 +7,8 @@ var logger = require('morgan');
 const passport = require('./config/passport');
 // Creamos el objeto session
 const session = require('express-session');
+// Traemos el modulo de JsonWebToken
+const jwt = require('jsonwebtoken');
 
 var indexRouter = require('./routes/index');
 // Agregamos usuarios
@@ -23,6 +25,8 @@ var usuarioAPIRouter = require('./routes/api/usuarios');
 const store = session.MemoryStore;
 
 var app = express();
+// Agregamos el secret key - esta va a se la semilla del cifrado
+app.set('secretKey', 'jwt_pwd_!!223344');
 // Lo que hacemos una vez definido el express es decirle a app que use session
 app.use(session({
   cookie: { mazAge: 240 * 60 * 60 * 1000 },
@@ -173,7 +177,7 @@ function validarUsuario (req, res, next) {
 
       next();
     }
-  })
+  });
 }
 
 module.exports = app;
