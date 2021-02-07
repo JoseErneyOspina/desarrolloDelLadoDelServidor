@@ -2,6 +2,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Usuario = require('../models/usuario');
+// Importamos la estrategia de GOOGLE
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.use(new LocalStrategy(
     function(email, password, done) {
@@ -14,6 +16,22 @@ passport.use(new LocalStrategy(
         });
     } 
 ));
+
+// Habilitamos estrategia de passport
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.HOST + "/auth/google/callback",
+    },
+    function(accessToken, refreshToken, profile, cb) {
+        console.log(profile);
+
+        Usuario.findOneOrCreateByGoogle(profile, function (err, user) {
+            return cb(err, user);
+        });
+    }
+));
+// Fin de habilitación de estrategia de passport
 
 passport.serializeUser(function(user, cb){
     cb(null, user.id);

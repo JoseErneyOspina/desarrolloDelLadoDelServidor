@@ -9,6 +9,8 @@ var logger = require('morgan');
 const passport = require('./config/passport');
 // Creamos el objeto session
 const session = require('express-session');
+// Require de la libreria COONNECT-MONGODB-SESSION pasando por parametro el (session) que debe de estar previamente definido
+const MongoDBStore = require('connect-mongodb-session')(session);
 // Traemos el modulo de JsonWebToken
 const jwt = require('jsonwebtoken');
 
@@ -25,15 +27,30 @@ var usuariosAPIRouter = require('./routes/api/usuarios');
 
 // Definimos un objeto store para definir cual es motor de session que vamos a usar
 // Utilizamos el MemoryStore sera bastante agil ya que quedara en la memoria del servidor
-const store = session.MemoryStore;
 
-var app = express();
+// const store = new session.MemoryStore;
+let store;
+if(process.env.NODE_ENV === 'development') {
+  // store = store;
+  store = new session.MemoryStore
+} else {
+  store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+  });
+  store.on('error', function(error) {
+    assert.ifError(error);
+    assert.ok(false);
+  })
+}
+
+let app = express();
 // Agregamos el secret key - esta va a se la semilla del cifrado
 app.set('secretKey', 'jwt_pwd_!!223344');
 // Lo que hacemos una vez definido el express es decirle a app que use session
 app.use(session({
-  cookie: { mazAge: 240 * 60 * 60 * 1000 },
-  sote: store,
+  cookie: { maxAge: 240 * 60 * 60 * 1000 },
+  store: store,
   saveUninitialized: true,
   resave: 'true',
   secret: 'red_bicis_!!!***!".!".!".!".123123'
@@ -137,7 +154,19 @@ app.post('/resetPassword', function(req, res){
   });
 });
 
+// Linea de codigo de PASSPORT-GOOGLE-OAUTH20
+app.get('/auth/google',
+  passport.authenticate('google', { scope: 
+      [ 'https://www.googleapis.com/auth/plus.login',
+      , 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }
+));
 
+app.get( '/auth/google/callback', 
+    passport.authenticate( 'google', { 
+        successRedirect: '/',
+        failureRedirect: '/error'
+}));
+// FIN de Linea de codigo de PASSPORT-GOOGLE-OAUTH20
 
 
 app.use('/', indexRouter);
