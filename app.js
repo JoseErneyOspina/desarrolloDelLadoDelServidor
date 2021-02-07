@@ -19,6 +19,7 @@ var usuariosRouter = require('./routes/usuarios');
 var tokenRouter = require('./routes/token');
 var usersRouter = require('./routes/users');
 var bicicletasRouter = require('./routes/bicicletas');
+var authApiRouter = require('./routes/api/auth');
 var bicicletasAPIRouter = require('./routes/api/bicicletas');
 var usuarioAPIRouter = require('./routes/api/usuarios');
 
