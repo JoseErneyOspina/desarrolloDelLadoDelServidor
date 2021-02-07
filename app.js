@@ -156,6 +156,11 @@ app.use('/api/usuarios', usuariosAPIRouter);
 app.use('/privacy_policy', function(req, res){
   res.sendFile('public/policy_privacy.html');
 });
+//Agregamos la ruta para verificación de dominio GOOGLE
+app.use('/google6b60d2bad23e87ed', function(req, res){
+  res.sendFile('public/google6b60d2bad23e87ed.html');
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
