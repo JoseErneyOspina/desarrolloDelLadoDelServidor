@@ -20,8 +20,8 @@ var tokenRouter = require('./routes/token');
 var usersRouter = require('./routes/users');
 var bicicletasRouter = require('./routes/bicicletas');
 var authApiRouter = require('./routes/api/auth');
-var bicicletasAPIRouter = require('./routes/api/bicicletas');
-var usuarioAPIRouter = require('./routes/api/usuarios');
+var bicicletasApiRouter = require('./routes/api/bicicletas');
+var usuariosAPIRouter = require('./routes/api/usuarios');
 
 // Definimos un objeto store para definir cual es motor de session que vamos a usar
 // Utilizamos el MemoryStore sera bastante agil ya que quedara en la memoria del servidor
