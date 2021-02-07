@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -39,7 +41,16 @@ app.use(session({
 // Referenciamos a moongoose
 var mongoose = require('mongoose');
 
-var mongoDB = 'mongodb://localhost/red_bicicletas';
+//var mongoDB = 'mongodb://localhost/red_bicicletas';
+//mongodb+srv://admin:<>g9vNvez@MgXaXfy2]PN>@bike-red.lhcl7.mongodb.net/<dbname>?retryWrites=true&w=majority
+// si estoy en el ambiente de desarrollo usar
+//var mongoDB = 'mongodb://localhost/red_bicicletas';
+// si no usar
+//var mongoDB = 'mongodb+srv://admin:<>g9vNvez@MgXaXfy2]PN>@bike-red.lhcl7.mongodb.net/<dbname>?retryWrites=true&w=majority';
+// Reemplazamos ya que usamos las variables .env
+// Esto lo que hace es identificar cual es la connection string que usaremos en el caso de ambiente
+var mongoDB = process.env.MONGO_URI;
+
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
