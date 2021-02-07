@@ -152,6 +152,11 @@ app.use('/api/auth', authApiRouter);
 app.use('/api/bicicletas', validarUsuario, bicicletasApiRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 
+//Agregamos la ruta a privacy policy
+app.use('/privacy_policy', function(req, res){
+  res.sendFile('public/policy_privacy.html');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
