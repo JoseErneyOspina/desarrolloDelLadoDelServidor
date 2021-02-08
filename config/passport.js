@@ -4,6 +4,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const Usuario = require('../models/usuario');
 // Importamos la estrategia de GOOGLE
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// Agregamos la estrategia de FACEBOOK
+const facebookTokenStrategy = require('passport-facebook-token');
 
 passport.use(new LocalStrategy(
     function(email, password, done) {
@@ -32,6 +34,24 @@ passport.use(new GoogleStrategy({
     }
 ));
 // Fin de habilitación de estrategia de passport
+
+// Inicio de estrategia de FACEBOOK
+passport.use(new FacebookTokenStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET
+}, function(accessToken, refreshToken, profile, done){
+    try {
+        Usuario.findOneOrCreateByFacebook(profile, function(err, user){
+            if (err) console.log('err' + err);
+            return done(err, user);
+        });
+    } catch(errr2){
+        console.log(err2);
+        return done(err2, null);
+    }
+}
+));
+// Fin de estrategia de FACEBOOK
 
 passport.serializeUser(function(user, cb){
     cb(null, user.id);
